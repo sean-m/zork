@@ -20,7 +20,8 @@ FILE *dbfile;
 #define TEXTFILE "/usr/local/games/lib/dtextc.dat"
 #endif /* ! unix */
 #ifdef __EMSCRIPTEN__
-#define TEXTFILE "gdata/dtextc.dat"
+/* emscripten needs a directory to virtualize for an html5 build to run */
+#define TEXTFILE "gdata/dtextc.dat"  
 #endif /* ! __EMSCRIPTEN__ */
 
 #endif // TEXTFILE
