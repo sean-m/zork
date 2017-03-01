@@ -6,10 +6,6 @@
 
 #include <stdio.h>
 
-#ifdef __AMOS__
-#include <amos.h>
-#endif
-
 #include "funcs.h"
 #include "vars.h"
 
@@ -20,20 +16,21 @@ extern void srand P((unsigned int));
 FILE *dbfile;
 
 #ifndef TEXTFILE
-#ifdef __AMOS__
-#define TEXTFILE "lib:dtextc.dat"
-#else /* ! __AMOS__ */
 #ifdef unix
-#define TEXTFILE "/usr/games/lib/dunlib/dtextc.dat"
-#else /* ! unix */
- I need a definition for TEXTFILE
+#define TEXTFILE "/usr/local/games/lib/dtextc.dat"
 #endif /* ! unix */
-#endif /* ! __AMOS__ */
-#endif /* ! TEXTFILE */
+#ifdef __EMSCRIPTEN__
+#define TEXTFILE "gdata/dtextc.dat"
+#endif /* ! __EMSCRIPTEN__ */
+
+#endif // TEXTFILE
+
 
 #ifndef LOCALTEXTFILE
 #define LOCALTEXTFILE "dtextc.dat"
 #endif
+
+
 
 /* Read a single two byte integer from the index file */
 
@@ -51,7 +48,7 @@ FILE *indxfile;
     integer ch;	/* Local variable for rdint */
 
     while (c-- != 0)
-	*pi++ = rdint(indxfile);
+	    *pi++ = rdint(indxfile);
 }
 
 /* Read a partial array of integers.  These are stored as index,value
@@ -66,20 +63,20 @@ FILE *indxfile;
     integer ch;	/* Local variable for rdint */
 
     while (1) {
-	int i;
+        int i;
 
-	if (c < 255) {
-	    i = getc(indxfile);
-	    if (i == 255)
-		return;
-	}
-	else {
-	    i = rdint(indxfile);
-	    if (i == -1)
-		return;
-	}
+        if (c < 255) {
+            i = getc(indxfile);
+            if (i == 255)
+            return;
+        }
+        else {
+            i = rdint(indxfile);
+            if (i == -1)
+            return;
+        }
 
-	pi[i] = rdint(indxfile);
+        pi[i] = rdint(indxfile);
     }
 }
 
@@ -91,7 +88,7 @@ logical *pf;
 FILE *indxfile;
 {
     while (c-- != 0)
-	*pf++ = getc(indxfile);
+	    *pf++ = getc(indxfile);
 }
 
 logical init_()
@@ -112,7 +109,7 @@ logical init_()
 /* FIRST CHECK FOR PROTECTION VIOLATION */
 
     if (protected()) {
-	goto L10000;
+	    goto L10000;
     }
 /* 						!PROTECTION VIOLATION? */
     more_output("There appears before you a threatening figure clad all over");
@@ -460,6 +457,6 @@ L1975:
     more_output("                       INITIALIZATION FAILURE");
     more_output("");
     more_output("The darkness becomes all encompassing, and your vision fails.");
-    return ret_val;
-
+    //return ret_val;
+    return 0;
 } /* init_ */

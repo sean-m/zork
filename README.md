@@ -1,3 +1,12 @@
+# Zork 1
+This is a fork of the Zork public domain source code which has gone through
+several source conversions chronicled below. I'm hoping to get a working
+javascript port so that kids can enjoy this even on a Chromebook. There are
+several similar projects out there, notably the Internet Archive has many classic
+games running in the browser via MAME or Dosbox emulating the host environment for
+natively compiled binaries but this is a C source to Javascript port so the game
+may run natively in the browser. Wish me luck.
+
 ```
 Welcome to Dungeon.			This version created 11-MAR-91.
 You are in an open field west of a big white house with a boarded

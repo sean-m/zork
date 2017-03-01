@@ -1,10 +1,10 @@
 # Makefile for dungeon
 
 # Where to install the program
-BINDIR = /usr/games
+BINDIR = /usr/local/games/bin
 
 # Where to install the data file
-LIBDIR = /usr/games/lib
+LIBDIR = /usr/local/games/lib
 
 # The dungeon program provides a ``more'' facility which tries to
 # figure out how many rows the terminal has.  Several mechanisms are
@@ -15,9 +15,9 @@ LIBDIR = /usr/games/lib
 # more option 1: use the termcap routines.  On some systems the LIBS
 # variable may need to be set to -lcurses.  On some it may need to
 # be /usr/lib/termcap.o.  These options are commented out below.
-LIBS = -ltermcap
+#LIBS = -ltermcap
 TERMFLAG =
-# LIBS = -lcurses
+#LIBS = -lcurses
 # LIBS = /usr/lib/termcap.o
 
 # more option 2: use the terminfo routines.  On some systems the LIBS
@@ -27,8 +27,8 @@ TERMFLAG =
 # TERMFLAG = -DMORE_TERMINFO
 
 # more option 3: assume all terminals have 24 rows
-# LIBS =
-# TERMFLAG = -DMORE_24
+ LIBS =
+ TERMFLAG = -DMORE_24
 
 # more option 4: don't use the more facility at all
 # LIBS =
@@ -48,6 +48,7 @@ CFLAGS = -g #-static
 # to not be used and should be uncommented.
 # CFLAGS= -O -Dconst=
 
+
 ##################################################################
 
 # Source files
@@ -62,21 +63,31 @@ OBJS =	actors.o ballop.o clockr.o demons.o dgame.o dinit.o dmain.o\
 	dverb2.o gdt.o lightp.o local.o nobjs.o np.o np1.o np2.o np3.o\
 	nrooms.o objcts.o rooms.o sobjs.o supp.o sverbs.o verbs.o villns.o
 
+dungeon-js: CC = emcc
+dungeon-js: CFLAGS += -DTEXTFILE=/gdata/dtextc.dat
+
 dungeon: $(OBJS) dtextc.dat
 	$(CC) $(CFLAGS) -o zork $(OBJS) $(LIBS)
 
+dungeon-js: $(OBJS) dtextc.dat
+	mkdir gdata/
+	cp dtextc.dat gdata/dtextc.dat
+	$(CC) $(CFLAGS) -o zork.html $(OBJS) $(LIBS) --preload-file gdata/dtextc.dat
+
 install: zork dtextc.dat
+	mkdir -p $(BINDIR)
+	mkdir -p $(LIBDIR)
 	cp zork $(BINDIR)
 	cp dtextc.dat $(LIBDIR)
 
 clean:
-	rm -f $(OBJS) zork core dsave.dat *~
+	rm -f $(OBJS) zork core dsave.dat *.html *~
 
 dtextc.dat:
 	cat dtextc.uu1 dtextc.uu2 dtextc.uu3 dtextc.uu4 | uudecode
 
 dinit.o: dinit.c funcs.h vars.h
-	$(CC) $(CFLAGS) $(GDTFLAG) -DTEXTFILE=\"$(LIBDIR)/dtextc.dat\" -c dinit.c
+	$(CC) $(CFLAGS) $(GDTFLAG) -c dinit.c
 
 dgame.o: dgame.c funcs.h vars.h
 	$(CC) $(CFLAGS) $(GDTFLAG) -c dgame.c
